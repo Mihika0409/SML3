@@ -1,0 +1,81 @@
+import scipy.io
+import numpy as np
+import sys
+
+
+# step 1 - initialize random clusters
+def initialize_cluster_centres():
+    cluster_centre_index = np.random.randint(instances, size=2)
+    print cluster_centre_index
+    cluster_centre_index_list = []
+    for i in range(len(cluster_centre_index)):
+        cluster_centre_index_list.append(list(matrix[i]))
+    iterate_over_instances(cluster_centre_index, cluster_centre_index_list)
+
+
+# step 2 - iterate over all instances
+def iterate_over_instances(cluster_centre_index, cluster_centre_index_list):
+    for i in range(instances):
+        calculate_euclidean_distance(matrix[i], cluster_centre_index_list, i)
+    assign_instances_to_clusters(instance_clusterindex_dict, cluster_centre_index, cluster_centre_index_list)
+
+
+# step 3 - calculate distance and assign to cluster
+def calculate_euclidean_distance(instance, cluster_centre_index_list, instance_index):
+    min_dist = sys.float_info.max
+    for i in range(len(cluster_centre_index_list)):
+        dist = np.linalg.norm(instance - cluster_centre_index_list[i])
+        if min_dist > dist:
+            min_dist = dist
+            instance_clusterindex_dict[instance_index] = i
+
+
+# step 4 - assign instances to clusters
+def assign_instances_to_clusters(instance_clusterindex_dict, cluster_centre_index, cluster_centre_index_list):
+    cluster_list = [[] for x in range(len(cluster_centre_index_list))]
+    for i in range(len(cluster_centre_index)):
+        cluster_list[i].append(cluster_centre_index[i])
+    for key, value in instance_clusterindex_dict.iteritems():
+        cluster_list[value].append(key)
+    print cluster_list
+    # reinitialize_cluster_centres(cluster_list)
+
+
+# step 5 - calculate new cluster centres
+def reinitialize_cluster_centres(cluster_list):
+    for i in range(len(cluster_list)):
+        temp = [[] for x in range(features)]
+        for j in range(len(cluster_list[i])):
+            for k in range(len(matrix[cluster_list[i][j]])):
+                temp[k].append(matrix[cluster_list[i][j]][k])
+        new_cluster_centre = []
+        for j in range(len(temp)):
+            new_cluster_centre.append(np.mean(temp[j]))
+        print new_cluster_centre
+
+        # pass  # print float(sum(cluster_list[i]))/len(cluster_list[i])
+
+
+# load .mat file
+mat = scipy.io.loadmat('kmeans_data.mat')
+
+# declare variables
+matrix = mat['data']
+instances = len(matrix)
+features = len(matrix[0])
+instance_clusterindex_dict = {}
+
+initialize_cluster_centres()
+'''a = [[1, 2, 5, 8], [0, 3, 4, 6, 7, 9]]
+b = [[], [], [], [], [], [], [], [], [], []]
+b[0] = [1, 2, 3]
+b[1] = [4, 5, 6]
+b[2] = [7, 8, 9]
+b[3] = [1, 2, 3]
+b[4] = [4, 5, 6]
+b[5] = [7, 8, 9]
+b[6] = [1, 2, 3]
+b[7] = [4, 5, 6]
+b[8] = [7, 8, 9]
+b[9] = [1, 2, 3]
+reinitialize_cluster_centres(a)'''
