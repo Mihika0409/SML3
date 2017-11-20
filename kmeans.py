@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import random
 import operator
+import matplotlib.pyplot as plt
 
 
 # step 1 - initialize random clusters
@@ -53,7 +54,6 @@ def reinitialize_cluster_centres(cluster_centre_features_list, cluster_list):
             new_cluster_centre.append(np.mean(new_cluster_features[j]))
         new_cluster_centre_list.append(new_cluster_centre)
     if new_cluster_centre_list == cluster_centre_features_list:
-        print "Done!"
         compute_objective_function(new_cluster_centre_list, cluster_list)
     else:
         iterate_over_instances(new_cluster_centre_list)
@@ -67,6 +67,7 @@ def compute_objective_function(cluster_centre_list, cluster_list):
             dist = np.linalg.norm(matrix[cluster_list[i][j]] - cluster_centre_list[i])**2
             obj_function += dist
     print obj_function
+    objective_function.append(obj_function)
 
 
 # step 1a - k means++
@@ -110,5 +111,17 @@ instances = len(matrix)
 features = len(matrix[0])
 instance_cluster_index_dict = {}
 
-# initialize_cluster_centres()
+objective_function = []
+initialize_cluster_centres()
+print objective_function
+
+'''objective_function = []
 initialize_kpp_clusters()
+print objective_function'''
+
+num_of_clusters = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+plt.plot(num_of_clusters, objective_function)
+plt.xlabel('Number of clusters')
+plt.ylabel('Objective function')
+plt.axis([0, 10, 0, 3000])
+plt.show()
